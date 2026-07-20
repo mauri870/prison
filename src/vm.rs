@@ -94,7 +94,7 @@ impl StrategyMemory {
 
 pub struct Vm {
     pub regs: [i8; 4],
-    scratch: [i8; 256],
+    scratch: [i8; 64],
     pc: u8,
     flags: Flags,
     rng: u64,
@@ -104,7 +104,7 @@ impl Vm {
     pub fn new(seed: u64) -> Self {
         Self {
             regs: [0; 4],
-            scratch: [0; 256],
+            scratch: [0; 64],
             pc: 0,
             flags: Flags::default(),
             rng: if seed == 0 { 1 } else { seed },
@@ -113,7 +113,7 @@ impl Vm {
 
     pub fn reset_for_match(&mut self) {
         self.regs = [0; 4];
-        self.scratch = [0; 256];
+        self.scratch = [0; 64];
         self.pc = 0;
         self.flags = Flags::default();
     }
@@ -156,12 +156,12 @@ impl Vm {
                 None
             }
             Opcode::LoadScratch { rd, rs } => {
-                self.regs[rd as usize] = self.scratch[self.regs[rs as usize] as u8 as usize];
+                self.regs[rd as usize] = self.scratch[(self.regs[rs as usize] as u8 & 0x3f) as usize];
                 self.pc = self.pc.wrapping_add(1);
                 None
             }
             Opcode::StoreScratch { rs, rd } => {
-                self.scratch[self.regs[rs as usize] as u8 as usize] = self.regs[rd as usize];
+                self.scratch[(self.regs[rs as usize] as u8 & 0x3f) as usize] = self.regs[rd as usize];
                 self.pc = self.pc.wrapping_add(1);
                 None
             }

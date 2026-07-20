@@ -1,7 +1,7 @@
 ; prison ISA
 ;
 ; 4 general-purpose registers: R0, R1, R2, R3 (signed 8-bit, wrapping arithmetic)
-; 256 bytes of per-match scratch memory (reset each match)
+; 64 bytes of per-match scratch memory (reset each match, addresses wrap at 64)
 ; 256 bytes of per-tournament persistent memory
 ; All jumps take a label; targets are resolved at assemble time.
 ; Programs execute from the top each round and must end with PLAY.

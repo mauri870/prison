@@ -15,7 +15,7 @@ prison tournament <dir> [--rounds N] [--seed N]
 
 Strategies are assembly files targeting the prison ISA. Each round the VM executes the program from the top and expects it to end with `PLAY COOPERATE` or `PLAY DEFECT`. If the program halts or exhausts its instruction budget without a play, it cooperates.
 
-Four registers (`R0`-`R3`), 256 bytes of per-match scratch memory, and 256 bytes of persistent per-tournament memory are available.
+Four registers (`R0`-`R3`), 64 bytes of per-match scratch memory, and 256 bytes of persistent per-tournament memory are available.
 
 Read-only pseudo-registers expose game state via `LOAD Rd, <name>`. See `isa.asm` for the full list and semantics.
 
