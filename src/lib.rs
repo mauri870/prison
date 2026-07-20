@@ -1,6 +1,7 @@
 pub mod assembler;
 pub mod decoder;
 pub mod match_runner;
+pub mod tournament;
 pub mod vm;
 
 pub fn run(src: &str, seed: u64) -> Result<vm::Action, String> {
