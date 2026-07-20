@@ -1,3 +1,12 @@
+; prison ISA
+;
+; 4 general-purpose registers: R0, R1, R2, R3 (signed 8-bit, wrapping arithmetic)
+; 256 bytes of per-match scratch memory (reset each match)
+; 256 bytes of per-tournament persistent memory
+; All jumps take a label; targets are resolved at assemble time.
+; Programs execute from the top each round and must end with PLAY.
+; Hitting HALT or exhausting the instruction budget cooperates by default.
+
 #bankdef default
 {
     #bits 8
@@ -50,6 +59,7 @@
     RDRAND {rd: reg}            => 0x80 @ rd
 }
 
+; Four general-purpose signed 8-bit registers
 #ruledef reg {
     R0 => 0x0`8
     R1 => 0x1`8
@@ -58,6 +68,6 @@
 }
 
 #ruledef consts {
-    COOPERATE => 0x0`8
-    DEFECT    => 0x1`8
+    COOPERATE => 0x0`8  ; 0
+    DEFECT    => 0x1`8  ; 1
 }
