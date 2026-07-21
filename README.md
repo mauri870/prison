@@ -1,6 +1,8 @@
 # prison
 
-An Axelrod tournament where strategies are written in a custom assembly language and run on a purpose-built virtual machine.
+An iterated prisoner's dilemma (IPD) tournament implementation inspired by Robert Axelrod The Evolution of Cooperation.
+
+Strategies are written in a custom assembly language and run on a purpose-built virtual machine.
 
 ## Usage
 
