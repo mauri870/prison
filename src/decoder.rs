@@ -41,8 +41,6 @@ fn decode_one(bytes: &[u8], at: usize) -> Result<(Opcode, usize), DecodeError> {
         0x11 => Ok((Opcode::Loadi { rd: bytes[at+1], imm: bytes[at+2] as i8 }, 3)),
         0x20 => Ok((Opcode::LoadScratch { rd: bytes[at+1], rs: bytes[at+2] }, 3)),
         0x21 => Ok((Opcode::StoreScratch { rs: bytes[at+1], rd: bytes[at+2] }, 3)),
-        0x22 => Ok((Opcode::LoadMemory { rd: bytes[at+1], rs: bytes[at+2] }, 3)),
-        0x23 => Ok((Opcode::StoreMemory { rs: bytes[at+1], rd: bytes[at+2] }, 3)),
         0x30 => Ok((Opcode::LoadPseudo { rd: bytes[at+1], which: decode_pseudo(bytes[at+2])? }, 3)),
         0x40 => Ok((Opcode::Add { rd: bytes[at+1], rs: bytes[at+2] }, 3)),
         0x41 => Ok((Opcode::Sub { rd: bytes[at+1], rs: bytes[at+2] }, 3)),
@@ -118,15 +116,6 @@ mod tests {
         assert!(matches!(compile("STORE SCRATCH[R1], R0\nPLAY COOPERATE")[0], Opcode::StoreScratch { rs: 1, rd: 0 }));
     }
 
-    #[test]
-    fn decode_load_memory() {
-        assert!(matches!(compile("LOAD R0, MEMORY[R1]\nPLAY COOPERATE")[0], Opcode::LoadMemory { rd: 0, rs: 1 }));
-    }
-
-    #[test]
-    fn decode_store_memory() {
-        assert!(matches!(compile("STORE MEMORY[R1], R0\nPLAY COOPERATE")[0], Opcode::StoreMemory { rs: 1, rd: 0 }));
-    }
 
     #[test]
     fn decode_load_pseudo_all() {

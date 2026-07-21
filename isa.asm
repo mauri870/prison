@@ -2,7 +2,6 @@
 ;
 ; 4 general-purpose registers: R0, R1, R2, R3 (signed 8-bit, wrapping arithmetic)
 ; 64 bytes of per-match scratch memory (reset each match, addresses wrap at 64)
-; 256 bytes of per-tournament persistent memory
 ; All jumps take a label; targets are resolved at assemble time.
 ; Programs execute from the top each round and must end with PLAY.
 ; Hitting HALT or exhausting the instruction budget cooperates by default.
@@ -24,8 +23,6 @@
 
     LOAD  {rd: reg}, SCRATCH[{rs: reg}]  => 0x20 @ rd @ rs
     STORE SCRATCH[{rs: reg}], {rd: reg}  => 0x21 @ rs @ rd
-    LOAD  {rd: reg}, MEMORY[{rs: reg}]   => 0x22 @ rd @ rs
-    STORE MEMORY[{rs: reg}], {rd: reg}   => 0x23 @ rs @ rd
 
     LOAD {rd: reg}, LASTSELF       => 0x30 @ rd @ 0x0`8
     LOAD {rd: reg}, LASTOPP        => 0x30 @ rd @ 0x1`8

@@ -1,4 +1,4 @@
-use crate::vm::{Action, Observation, Opcode, StrategyMemory, Vm, VmError};
+use crate::vm::{Action, Observation, Opcode, Vm, VmError};
 
 pub struct RoundResult {
     pub action_a: Action,
@@ -21,8 +21,6 @@ pub fn run_match(
 ) -> Result<MatchResult, VmError> {
     let mut vm_a = Vm::new(seed);
     let mut vm_b = Vm::new(seed);
-    let mut mem_a = StrategyMemory::new();
-    let mut mem_b = StrategyMemory::new();
     vm_a.reset_for_match();
     vm_b.reset_for_match();
 
@@ -38,8 +36,8 @@ pub fn run_match(
         obs_a.opp_id = 1;
         obs_b.opp_id = 0;
 
-        let action_a = vm_a.run_round(program_a, &obs_a, &mut mem_a)?;
-        let action_b = vm_b.run_round(program_b, &obs_b, &mut mem_b)?;
+        let action_a = vm_a.run_round(program_a, &obs_a)?;
+        let action_b = vm_b.run_round(program_b, &obs_b)?;
 
         let (score_a, score_b) = payoff(action_a, action_b);
         total_a += score_a as i32;

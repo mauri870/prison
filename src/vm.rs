@@ -25,8 +25,6 @@ pub enum Opcode {
     Loadi { rd: u8, imm: i8 },
     LoadScratch { rd: u8, rs: u8 },
     StoreScratch { rs: u8, rd: u8 },
-    LoadMemory { rd: u8, rs: u8 },
-    StoreMemory { rs: u8, rd: u8 },
     LoadPseudo { rd: u8, which: PseudoReg },
     Add { rd: u8, rs: u8 },
     Sub { rd: u8, rs: u8 },
@@ -82,16 +80,6 @@ impl Default for Observation {
     }
 }
 
-pub struct StrategyMemory {
-    pub memory: [i8; 256],
-}
-
-impl StrategyMemory {
-    pub fn new() -> Self {
-        Self { memory: [0; 256] }
-    }
-}
-
 pub struct Vm {
     pub regs: [i8; 4],
     scratch: [i8; 64],
@@ -122,14 +110,13 @@ impl Vm {
         &mut self,
         program: &[Opcode],
         obs: &Observation,
-        mem: &mut StrategyMemory,
     ) -> Result<Action, VmError> {
         self.pc = 0;
         for _ in 0..INSTRUCTION_BUDGET {
             match program.get(self.pc as usize) {
                 None => return Err(VmError::PcOutOfBounds),
                 Some(&op) => {
-                    if let Some(action) = self.execute(op, obs, mem) {
+                    if let Some(action) = self.execute(op, obs) {
                         return Ok(action);
                     }
                 }
@@ -138,7 +125,7 @@ impl Vm {
         Ok(Action::Cooperate)
     }
 
-    fn execute(&mut self, op: Opcode, obs: &Observation, mem: &mut StrategyMemory) -> Option<Action> {
+    fn execute(&mut self, op: Opcode, obs: &Observation) -> Option<Action> {
         match op {
             Opcode::Nop => {
                 self.pc = self.pc.wrapping_add(1);
@@ -162,16 +149,6 @@ impl Vm {
             }
             Opcode::StoreScratch { rs, rd } => {
                 self.scratch[(self.regs[rs as usize] as u8 & 0x3f) as usize] = self.regs[rd as usize];
-                self.pc = self.pc.wrapping_add(1);
-                None
-            }
-            Opcode::LoadMemory { rd, rs } => {
-                self.regs[rd as usize] = mem.memory[self.regs[rs as usize] as u8 as usize];
-                self.pc = self.pc.wrapping_add(1);
-                None
-            }
-            Opcode::StoreMemory { rs, rd } => {
-                mem.memory[self.regs[rs as usize] as u8 as usize] = self.regs[rd as usize];
                 self.pc = self.pc.wrapping_add(1);
                 None
             }
@@ -300,14 +277,11 @@ mod tests {
     }
 
     fn run_with_obs(program: Vec<Opcode>, obs: Observation) -> Action {
-        let mut vm = Vm::new(1);
-        let mut mem = StrategyMemory::new();
-        vm.run_round(&program, &obs, &mut mem).unwrap()
+        Vm::new(1).run_round(&program, &obs).unwrap()
     }
 
     fn run_with_vm(mut vm: Vm, program: Vec<Opcode>) -> Action {
-        let mut mem = StrategyMemory::new();
-        vm.run_round(&program, &Observation::default(), &mut mem).unwrap()
+        vm.run_round(&program, &Observation::default()).unwrap()
     }
 
     #[test]
@@ -361,7 +335,6 @@ mod tests {
         let mut vm = Vm::new(1);
         vm.regs[1] = 5;  // index
         vm.regs[0] = 99; // value to store
-        let mut mem = StrategyMemory::new();
         let program = vec![
             Opcode::StoreScratch { rs: 1, rd: 0 }, // scratch[5] = 99
             Opcode::LoadScratch { rd: 2, rs: 1 },  // R2 = scratch[5]
@@ -370,24 +343,7 @@ mod tests {
             Opcode::Play(Action::Defect),
             Opcode::Play(Action::Cooperate),
         ];
-        assert_eq!(vm.run_round(&program, &Observation::default(), &mut mem).unwrap(), Action::Cooperate);
-    }
-
-    #[test]
-    fn store_memory_and_load_memory() {
-        let mut vm = Vm::new(1);
-        vm.regs[1] = 3;   // index
-        vm.regs[0] = 77;  // value to store
-        let mut mem = StrategyMemory::new();
-        let program = vec![
-            Opcode::StoreMemory { rs: 1, rd: 0 }, // memory[3] = 77
-            Opcode::LoadMemory { rd: 2, rs: 1 },  // R2 = memory[3]
-            Opcode::Cmpi { ra: 2, imm: 77 },
-            Opcode::Jeq(5),
-            Opcode::Play(Action::Defect),
-            Opcode::Play(Action::Cooperate),
-        ];
-        assert_eq!(vm.run_round(&program, &Observation::default(), &mut mem).unwrap(), Action::Cooperate);
+        assert_eq!(vm.run_round(&program, &Observation::default()).unwrap(), Action::Cooperate);
     }
 
     #[test]
@@ -776,11 +732,7 @@ mod tests {
             Opcode::Play(Action::Cooperate),
         ];
         let outcomes: Vec<Action> = (1u64..=64)
-            .map(|seed| {
-                let mut vm = Vm::new(seed);
-                let mut mem = StrategyMemory::new();
-                vm.run_round(&program, &Observation::default(), &mut mem).unwrap()
-            })
+            .map(|seed| Vm::new(seed).run_round(&program, &Observation::default()).unwrap())
             .collect();
         assert!(outcomes.contains(&Action::Cooperate));
         assert!(outcomes.contains(&Action::Defect));
