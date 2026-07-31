@@ -1,8 +1,8 @@
 # prison
 
-An iterated prisoner's dilemma (IPD) tournament implementation inspired by Robert Axelrod The Evolution of Cooperation.
+An iterated prisoner's dilemma (IPD) tournament implementation inspired by Robert Axelrod's The Evolution of Cooperation.
 
-Strategies are written in a custom assembly language and run on a purpose-built virtual machine.
+Strategies are small agents written in a custom assembly language and run on a purpose-built virtual machine.
 
 ## Usage
 
