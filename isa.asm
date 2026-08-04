@@ -24,13 +24,13 @@
     LOAD  {rd: reg}, SCRATCH[{rs: reg}]  => 0x20 @ rd @ rs
     STORE SCRATCH[{rs: reg}], {rd: reg}  => 0x21 @ rs @ rd
 
-    LOAD {rd: reg}, LASTSELF       => 0x30 @ rd @ 0x0`8
-    LOAD {rd: reg}, LASTOPP        => 0x30 @ rd @ 0x1`8
-    LOAD {rd: reg}, ROUND          => 0x30 @ rd @ 0x2`8
-    LOAD {rd: reg}, SCORESELF      => 0x30 @ rd @ 0x3`8
-    LOAD {rd: reg}, SCOREOPP       => 0x30 @ rd @ 0x4`8
-    LOAD {rd: reg}, OPPID          => 0x30 @ rd @ 0x5`8
-    LOAD {rd: reg}, LASTPAYOFFSELF => 0x30 @ rd @ 0x6`8
+    LOAD {rd: reg}, LASTSELF       => 0x30 @ rd @ 0x0`8 ; Your last action (0=C, 1=D)
+    LOAD {rd: reg}, LASTOPP        => 0x30 @ rd @ 0x1`8 ; Opponent's last action (0=C, 1=D)
+    LOAD {rd: reg}, ROUND          => 0x30 @ rd @ 0x2`8 ; Current round number
+    LOAD {rd: reg}, SCORESELF      => 0x30 @ rd @ 0x3`8 ; Your cumulative score
+    LOAD {rd: reg}, SCOREOPP       => 0x30 @ rd @ 0x4`8 ; Opponent's cumulative score
+    LOAD {rd: reg}, OPPID          => 0x30 @ rd @ 0x5`8 ; Opponent index in tournament
+    LOAD {rd: reg}, LASTPAYOFFSELF => 0x30 @ rd @ 0x6`8 ; Your payoff last round
 
     ADD {rd: reg}, {rs: reg}    => 0x40 @ rd @ rs
     SUB {rd: reg}, {rs: reg}    => 0x41 @ rd @ rs

@@ -19,37 +19,27 @@ Strategies are assembly files targeting the prison ISA. Each round the VM execut
 
 Four registers (`R0`-`R3`), 64 bytes of per-match scratch memory.
 
-Read-only pseudo-registers expose game state via `LOAD Rd, <name>`. See `isa.asm` for the full list and semantics.
+Read-only pseudo-registers expose game state via `LOAD Rd, <name>`.
 
 Payoff matrix: CC=(3,3), CD=(0,5), DC=(5,0), DD=(1,1).
 
-Example [tit_for_tat.asm](strategies/tit_for_tat.asm):
+Example [joss.asm](strategies/joss.asm):
 
 ```asm
-; Cooperate on round 0, then mirror the opponent's last move.
+; Like tit-for-tat but randomly defects ~10% of the time even when opponent cooperated.
     LOAD R0, LASTOPP
     CMP R0, DEFECT
     JEQ defect
+    RDRAND R0
+    CMPI R0, #102
+    JGT defect
     PLAY COOPERATE
 
 defect:
     PLAY DEFECT
-
 ```
 
-Read-only pseudo-registers expose game state:
-
-| Name            | Value                          |
-|-----------------|--------------------------------|
-| `LASTOPP`       | Opponent's last action (0=C, 1=D) |
-| `LASTSELF`      | Your last action               |
-| `ROUND`         | Current round number           |
-| `SCORESELF`     | Your cumulative score          |
-| `SCOREOPP`      | Opponent's cumulative score    |
-| `LASTPAYOFFSELF`| Your payoff last round         |
-| `OPPID`         | Opponent index in tournament   |
-
-The full instruction set with per-instruction documentation is in `isa.asm`.
+The full instruction set with per-instruction documentation is in [`isa.asm`](isa.asm).
 
 ## Testing strategies
 
