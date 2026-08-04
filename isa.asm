@@ -38,6 +38,8 @@
     AND {rd: reg}, {rs: reg}    => 0x43 @ rd @ rs
     OR  {rd: reg}, {rs: reg}    => 0x44 @ rd @ rs
     XOR {rd: reg}, {rs: reg}    => 0x45 @ rd @ rs
+    DIV {rd: reg}, {rs: reg}    => 0x46 @ rd @ rs
+    MOD {rd: reg}, {rs: reg}    => 0x47 @ rd @ rs
 
     CMP  {ra: reg}, {rb: reg}   => 0x50 @ ra @ rb
     CMPI {ra: reg}, #{imm: i8}  => 0x51 @ ra @ imm

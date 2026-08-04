@@ -48,6 +48,8 @@ fn decode_one(bytes: &[u8], at: usize) -> Result<(Opcode, usize), DecodeError> {
         0x43 => Ok((Opcode::And { rd: bytes[at+1], rs: bytes[at+2] }, 3)),
         0x44 => Ok((Opcode::Or  { rd: bytes[at+1], rs: bytes[at+2] }, 3)),
         0x45 => Ok((Opcode::Xor { rd: bytes[at+1], rs: bytes[at+2] }, 3)),
+        0x46 => Ok((Opcode::Div { rd: bytes[at+1], rs: bytes[at+2] }, 3)),
+        0x47 => Ok((Opcode::Mod { rd: bytes[at+1], rs: bytes[at+2] }, 3)),
         0x50 => Ok((Opcode::Cmp  { ra: bytes[at+1], rb: bytes[at+2] }, 3)),
         0x51 => Ok((Opcode::Cmpi { ra: bytes[at+1], imm: bytes[at+2] as i8 }, 3)),
         0x52 => Ok((Opcode::Test { rd: bytes[at+1], imm: bytes[at+2] as i8 }, 3)),
@@ -160,6 +162,16 @@ mod tests {
     #[test]
     fn decode_xor() {
         assert!(matches!(compile("XOR R0, R1\nPLAY COOPERATE")[0], Opcode::Xor { rd: 0, rs: 1 }));
+    }
+
+    #[test]
+    fn decode_div() {
+        assert!(matches!(compile("DIV R0, R1\nPLAY COOPERATE")[0], Opcode::Div { rd: 0, rs: 1 }));
+    }
+
+    #[test]
+    fn decode_mod() {
+        assert!(matches!(compile("MOD R0, R1\nPLAY COOPERATE")[0], Opcode::Mod { rd: 0, rs: 1 }));
     }
 
     #[test]

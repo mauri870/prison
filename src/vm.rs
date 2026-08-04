@@ -32,6 +32,8 @@ pub enum Opcode {
     And { rd: u8, rs: u8 },
     Or  { rd: u8, rs: u8 },
     Xor { rd: u8, rs: u8 },
+    Div { rd: u8, rs: u8 },
+    Mod { rd: u8, rs: u8 },
     Cmp  { ra: u8, rb: u8 },
     Cmpi { ra: u8, imm: i8 },
     Test { rd: u8, imm: i8 },
@@ -184,6 +186,22 @@ impl Vm {
             }
             Opcode::Xor { rd, rs } => {
                 self.regs[rd as usize] ^= self.regs[rs as usize];
+                self.pc = self.pc.wrapping_add(1);
+                None
+            }
+            Opcode::Div { rd, rs } => {
+                let divisor = self.regs[rs as usize];
+                self.regs[rd as usize] = if divisor == 0 { 0 } else {
+                    self.regs[rd as usize].wrapping_div(divisor)
+                };
+                self.pc = self.pc.wrapping_add(1);
+                None
+            }
+            Opcode::Mod { rd, rs } => {
+                let divisor = self.regs[rs as usize];
+                self.regs[rd as usize] = if divisor == 0 { 0 } else {
+                    self.regs[rd as usize].wrapping_rem(divisor)
+                };
                 self.pc = self.pc.wrapping_add(1);
                 None
             }
@@ -532,6 +550,66 @@ mod tests {
         let program = vec![
             Opcode::Xor { rd: 0, rs: 1 },
             Opcode::Cmpi { ra: 0, imm: 0b0101 },
+            Opcode::Jeq(4),
+            Opcode::Play(Action::Defect),
+            Opcode::Play(Action::Cooperate),
+        ];
+        assert_eq!(run_with_vm(vm, program), Action::Cooperate);
+    }
+
+    #[test]
+    fn div() {
+        let mut vm = Vm::new(1);
+        vm.regs[0] = 10;
+        vm.regs[1] = 3;
+        let program = vec![
+            Opcode::Div { rd: 0, rs: 1 },
+            Opcode::Cmpi { ra: 0, imm: 3 },
+            Opcode::Jeq(4),
+            Opcode::Play(Action::Defect),
+            Opcode::Play(Action::Cooperate),
+        ];
+        assert_eq!(run_with_vm(vm, program), Action::Cooperate);
+    }
+
+    #[test]
+    fn div_by_zero_yields_zero() {
+        let mut vm = Vm::new(1);
+        vm.regs[0] = 42;
+        vm.regs[1] = 0;
+        let program = vec![
+            Opcode::Div { rd: 0, rs: 1 },
+            Opcode::Cmpi { ra: 0, imm: 0 },
+            Opcode::Jeq(4),
+            Opcode::Play(Action::Defect),
+            Opcode::Play(Action::Cooperate),
+        ];
+        assert_eq!(run_with_vm(vm, program), Action::Cooperate);
+    }
+
+    #[test]
+    fn mod_basic() {
+        let mut vm = Vm::new(1);
+        vm.regs[0] = 17;
+        vm.regs[1] = 10;
+        let program = vec![
+            Opcode::Mod { rd: 0, rs: 1 },
+            Opcode::Cmpi { ra: 0, imm: 7 },
+            Opcode::Jeq(4),
+            Opcode::Play(Action::Defect),
+            Opcode::Play(Action::Cooperate),
+        ];
+        assert_eq!(run_with_vm(vm, program), Action::Cooperate);
+    }
+
+    #[test]
+    fn mod_by_zero_yields_zero() {
+        let mut vm = Vm::new(1);
+        vm.regs[0] = 42;
+        vm.regs[1] = 0;
+        let program = vec![
+            Opcode::Mod { rd: 0, rs: 1 },
+            Opcode::Cmpi { ra: 0, imm: 0 },
             Opcode::Jeq(4),
             Opcode::Play(Action::Defect),
             Opcode::Play(Action::Cooperate),

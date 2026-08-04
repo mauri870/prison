@@ -4,8 +4,10 @@
     CMP R0, DEFECT
     JEQ defect
     RDRAND R0
-    CMPI R0, #102
-    JGT defect
+    LOADI R1, #10
+    MOD R0, R1
+    CMPI R0, #0
+    JEQ defect
     PLAY COOPERATE
 
 defect:
