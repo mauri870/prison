@@ -1,6 +1,6 @@
 # prison
 
-An iterated prisoner's dilemma (IPD) tournament implementation inspired by Robert Axelrod's The Evolution of Cooperation.
+An iterated prisoner's dilemma (IPD) tournament implementation inspired by Robert Axelrod's [The Evolution of Cooperation](https://ee.stanford.edu/~hellman/Breakthrough/book/pdfs/axelrod.pdf).
 
 Strategies are small agents written in a custom assembly language and run on a purpose-built virtual machine.
 
@@ -47,4 +47,15 @@ Add `; Expect: action=Cooperate` (or `Defect`) to a strategy file and it will be
 
 ```
 cargo test
+```
+
+## Citing this project
+
+```bibtex
+@software{meneguzzo2026prison,
+  author  = {{de Souza Meneguzzo}, Mauri},
+  title   = {prison},
+  year    = {2026},
+  url     = {https://github.com/mauri870/prison}
+}
 ```

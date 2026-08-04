@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: prison
+message: If you use this software, please cite it using the metadata below.
+type: software
+authors:
+  - family-names: de Souza Meneguzzo
+    given-names: Mauri
+    email: mauri870@gmail.com
+repository-code: https://github.com/mauri870/prison
+abstract: >
+  An iterated prisoner's dilemma tournament platform where strategies are
+  written in a custom assembly language and executed on a purpose-built
+  virtual machine.
+license: MIT
+date-released: 2026-08-04
