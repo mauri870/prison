@@ -1,5 +1,5 @@
 ; Like tit-for-tat but defects on round 0 instead of cooperating.
-; Expect: action=Defect
+; Expect(self, opp) = [(1,0), (0,1), (1,0), (0,0)]
     LOAD R0, ROUND
     CMPI R0, #0
     JEQ defect

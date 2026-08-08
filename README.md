@@ -45,7 +45,13 @@ The full instruction set with per-instruction documentation is in [`isa.asm`](is
 
 ## Testing strategies
 
-Add `; Expect: action=Cooperate` (or `Defect`) to a strategy file and it will be picked up automatically by the test harness. Use `seed=N` to fix the RNG for strategies that use `RDRAND`.
+Add one or more `; Expect(self, opp) = [...]` lines to a strategy file and they will be picked up automatically by the test harness. Each line is an independent test run. Each element in the array is a pair `(expected_action, opponent_action)` for that round, encoded as `0` (cooperate) or `1` (defect). The array length sets how many rounds to simulate.
+
+```asm
+; Expect(self, opp) = [(0,0), (0,1), (1,0), (0,0)]
+```
+
+Use `; Seed: N` to fix the RNG for strategies that use `RDRAND`.
 
 ```
 cargo test

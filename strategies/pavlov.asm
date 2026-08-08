@@ -1,5 +1,5 @@
 ; Win-stay, lose-shift: repeat last action if payoff was good (>=3), switch otherwise.
-; Expect: action=Cooperate
+; Expect(self, opp) = [(0,0), (0,1), (1,1), (0,0), (0,0)]
     LOAD R0, ROUND
     CMPI R0, #0
     JEQ cooperate

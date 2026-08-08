@@ -1,6 +1,6 @@
 ; Cooperate until opponent defects, then punish with N defections (N = total opponent defections),
 ; followed by two cooperative rounds to signal reconciliation.
-; Expect: action=Cooperate
+; Expect(self, opp) = [(0,0), (0,1), (1,0), (0,0), (0,1), (1,0), (1,0), (0,0), (0,0)]
     LOADI R0, #2
     LOAD R1, SCRATCH[R0]
     CMPI R1, #0

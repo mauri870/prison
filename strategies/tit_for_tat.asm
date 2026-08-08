@@ -1,5 +1,5 @@
 ; Cooperate on round 0, then mirror the opponent's last move.
-; Expect: action=Cooperate
+; Expect(self, opp) = [(0,0), (0,1), (1,0), (0,0)]
     LOAD R0, LASTOPP
     CMP R0, DEFECT
     JEQ defect

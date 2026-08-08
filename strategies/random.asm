@@ -1,5 +1,6 @@
 ; Cooperate or defect at random with equal probability.
-; Expect: seed=42 action=Cooperate
+; Seed: 42
+; Expect(self, opp) = [(0,0)]
     RDRAND R0
     TEST R0, #1
     JEQ cooperate

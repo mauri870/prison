@@ -1,5 +1,5 @@
 ; Cooperate if opponent has cooperated at least as often as defected, otherwise defect.
-; Expect: action=Cooperate
+; Expect(self, opp) = [(0,0), (0,1), (0,1), (1,0), (0,0)]
     LOADI R0, #0
     LOAD R1, ROUND
     CMPI R1, #0

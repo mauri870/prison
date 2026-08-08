@@ -1,5 +1,6 @@
 ; Like tit-for-tat but randomly defects ~10% of the time even when opponent cooperated.
-; Expect: action=Cooperate
+; Seed: 1
+; Expect(self, opp) = [(0,1), (1,0)]
     LOAD R0, LASTOPP
     CMP R0, DEFECT
     JEQ defect

@@ -1,5 +1,5 @@
 ; Like tit-for-tat but only retaliates after two consecutive defections.
-; Expect: action=Cooperate
+; Expect(self, opp) = [(0,1), (0,1), (1,0), (0,0), (0,0)]
     LOADI R1, #0
     LOAD R0, LASTOPP
     LOAD R2, SCRATCH[R1]

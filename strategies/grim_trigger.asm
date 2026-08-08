@@ -1,5 +1,5 @@
 ; Cooperate until the opponent defects once, then defect forever.
-; Expect: action=Cooperate
+; Expect(self, opp) = [(0,0), (0,1), (1,0), (1,0)]
     LOADI R0, #0
     LOAD R1, SCRATCH[R0]
     TEST R1, #1
